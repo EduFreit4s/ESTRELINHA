@@ -159,7 +159,7 @@ void loop(){
   vertical.write(servo_v);                                    // POSICIONA SERVO VERTICAL
   }
 
-  if (servo_v <= v_limite_min) servo_v = v_limite_min;        // LIMITE MÍNIMO DO SERVO VERTICAL
+  if(servo_v <= v_limite_min) servo_v = v_limite_min;        // LIMITE MÍNIMO DO SERVO VERTICAL
   if(servo_v >= v_limite_max) servo_v = v_limite_max;         // LIMITE MÁXIMO DO SERVO VERTICAL
 
           /*****************/
