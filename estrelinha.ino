@@ -151,9 +151,9 @@ void loop(){
   if(-1 * SENSE > delta_v || delta_v > SENSE){        // FUNÇÃO CONTROLA O ATUADOR VERTICAL
 
     if(m_superior > m_inferior){
-      servo_v = --servo_v;
+      servo_v--;
     }else if(m_superior < m_inferior){
-      servo_v = ++servo_v;
+      servo_v++;
     }
     
   vertical.write(servo_v);                                    // POSICIONA SERVO VERTICAL
@@ -167,9 +167,9 @@ void loop(){
   if(-1 * SENSE > delta_h || delta_h > SENSE){        // FUNÇÃO CONTROLA O ATUADOR HORIZONTAL
 
     if (m_esquerda > m_direita){
-      servo_h = ++servo_h;    
+      servo_h++;    
     }else if (m_esquerda < m_direita){
-      servo_h = --servo_h;
+      servo_h--;
     }
     
   horizontal.write(servo_h);                                 // POSICIONA SERVO HORIZONTAL
