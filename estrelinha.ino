@@ -1,8 +1,3 @@
-// Estrelinha
-// Autores: Eduardo Freitas, Maria Fernanda, Victor Ramalho e Matheus Inocêncio
-// Data: 14/07/2019 
-// Versão: 0.42 
-
 #include <Servo.h>                    // BIBLIOTECA NECESSÁRIA
 
 /****************************************************************************************************/
