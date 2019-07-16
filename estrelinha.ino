@@ -1,7 +1,6 @@
 // Estrelinha
-// Autor: Eduardo Freitas
-// Data: 14/07/2019 
-// Versão: 0.42 
+// Data: 16/07/2019 
+// Versão: final
 
 #include <Servo.h>                    // BIBLIOTECA NECESSÁRIA
 
@@ -23,17 +22,18 @@
 
 // BOTÃO
 
-#define PIN_BOTAO 9                   // BOTÃO
+#define PIN_BOTAO 5                   // BOTÃO
 
 /****************************************************************************************************/
 
                                 /// CONFIGURAÇÕES
 
+#define VELOCIDADE_TESTE 20                   // VELOCIDADE AUTO TESTE
+#define TOLERANCIA 30                         // SENSIBILIDADE DO SISTEMA 
+#define VELOCIDADE_SERVO 25                   // VELOCIDADE DOS ATUADORES
+#define VELOCIDADE_MONITOR 60000              // TAXA DE ATUALIZAÇÃO DO MONITOR /// 60.000 == 1 MINUTO (NÃO MEXER!) 
 
-#define SENSE 50                       // SENSIBILIDADE DO SISTEMA
-#define ATRASO 30                      // VELOCIDADE DO SISTEMA
-#define ATRASO_TESTE 15                // VELOCIDADE DOS SERVO DURANTE TESTE
-#define ESTRELINHA 6                   // SENSIBILIDADE ESCURIDÃO
+#define ESTRELINHA 6                          // POSIÇÃO ALVORADA
 /*******************************************************************************************************************/
 
                                  /// ATUADORES
@@ -64,10 +64,13 @@ int rpm = 0;                          // ROTAÇÕES POR MINUTO
 
 // TEMPO
 
-unsigned long tempo;                 // CONTA O TEMPO EM MILISEGUNDOS APÓS LIGAR ARDUINO
-unsigned long intervalo = 60000;     // [ 60000 ] UM MINUTO, NÃO MEXER!
-unsigned long tempo_anterior = 0;
-int minutos = 0;                     // USADO NO MONITOR SERIAL PARA DEFINIR O TEMPO EM QUE AMOSTRA FOI COLETADA
+unsigned long tempo;                        // CONTA O TEMPO EM MILISEGUNDOS APÓS LIGAR ARDUINO
+unsigned long tempo_anterior_servo = 0;     // UTILIZADO NOS ATUADORES
+unsigned long tempo_anterior_monitor = 0;   // UTILIZADO NO MONITOR
+unsigned long intervalo = 60000;            // UM MINUTO, NÃO MEXER!
+
+int minutos = 0;                            // USADO NO MONITOR SERIAL PARA DEFINIR O TEMPO EM QUE AMOSTRA FOI COLETADA
+
 
 // BOTÃO
 
@@ -80,7 +83,7 @@ void setup() {
 
   Serial.begin(9600);                  // INICIA COMUNICAÇÃO SERIAL
 
-  pinMode(pin_botao, INPUT);
+  pinMode(PIN_BOTAO, INPUT);
   estado_anterior = digitalRead(PIN_BOTAO);
 
 
@@ -97,30 +100,30 @@ void setup() {
 
   for(servo_v = 90; servo_v >= 30; servo_v--){
     vertical.write(servo_v);
-    delay(ATRASO_TESTE);
+    delay(VELOCIDADE_TESTE);
   }
   for(servo_v = 30; servo_v <= 150; servo_v++){
     vertical.write(servo_v);
-    delay(ATRASO_TESTE);
+    delay(VELOCIDADE_TESTE);
   }
   for(servo_v = 150; servo_v >= 90; servo_v--){
     vertical.write(servo_v);
-    delay(ATRASO_TESTE);
+    delay(VELOCIDADE_TESTE);
   }
 
  delay(1000);
 
   for(servo_h = 90; servo_h >= 45; servo_h--){
     horizontal.write(servo_h);
-    delay(ATRASO_TESTE);
+    delay(VELOCIDADE_TESTE);
   }
   for(servo_h = 45; servo_h <= 135; servo_h++){
     horizontal.write(servo_h);
-    delay(ATRASO_TESTE);
+    delay(VELOCIDADE_TESTE);
   }
   for(servo_h = 135; servo_h >= 90; servo_h--){
     horizontal.write(servo_h);
-    delay(ATRASO_TESTE);
+    delay(VELOCIDADE_TESTE);
   }
 
         /// FIM DO TESTE
@@ -147,8 +150,11 @@ void loop(){
 
 
 /*******************************************************************************/
+if(tempo - tempo_anterior_servo >= VELOCIDADE_SERVO){
+  
+  tempo_anterior_servo = tempo;
 
-  if(-1 * SENSE > delta_v || delta_v > SENSE){        // FUNÇÃO CONTROLA O ATUADOR VERTICAL
+  if( delta_v < (TOLERANCIA * (-1)) || delta_v > TOLERANCIA){        // FUNÇÃO CONTROLA O ATUADOR VERTICAL
 
     if(m_superior > m_inferior){
       servo_v--;
@@ -156,15 +162,16 @@ void loop(){
       servo_v++;
     }
     
-  vertical.write(servo_v);                                    // POSICIONA SERVO VERTICAL
-  }
+    vertical.write(servo_v);                                    // POSICIONA SERVO VERTICAL
+  
+    }
 
-  if(servo_v <= v_limite_min) servo_v = v_limite_min;        // LIMITE MÍNIMO DO SERVO VERTICAL
-  if(servo_v >= v_limite_max) servo_v = v_limite_max;         // LIMITE MÁXIMO DO SERVO VERTICAL
+    if(servo_v <= v_limite_min) servo_v = v_limite_min;         // LIMITE MÍNIMO DO SERVO VERTICAL
+    if(servo_v >= v_limite_max) servo_v = v_limite_max;         // LIMITE MÁXIMO DO SERVO VERTICAL
 
           /*****************/
 
-  if(-1 * SENSE > delta_h || delta_h > SENSE){        // FUNÇÃO CONTROLA O ATUADOR HORIZONTAL
+  if( delta_h < (TOLERANCIA * (-1)) || delta_h > TOLERANCIA){       // FUNÇÃO CONTROLA O ATUADOR HORIZONTAL
 
     if (m_esquerda > m_direita){
       servo_h++;    
@@ -172,12 +179,14 @@ void loop(){
       servo_h--;
     }
     
-  horizontal.write(servo_h);                                 // POSICIONA SERVO HORIZONTAL
-  }
-
-  if (servo_h <= h_limite_min) servo_h = h_limite_min;      // LIMITE MÍNIMO DO SERVO HORIZONTAL
-  if (servo_h >= h_limite_max) servo_h = h_limite_max;      // LIMITE MÁXIMO DO SERVO HORIZONTAL
+    horizontal.write(servo_h);                                 // POSICIONA SERVO HORIZONTAL
   
+    }
+
+    if(servo_h <= h_limite_min) servo_h = h_limite_min;      // LIMITE MÍNIMO DO SERVO HORIZONTAL
+    if(servo_h >= h_limite_max) servo_h = h_limite_max;      // LIMITE MÁXIMO DO SERVO HORIZONTAL
+  
+}
 /**************************************************************************/
 
   botao = digitalRead(PIN_BOTAO);                  // LEITURA DO BOTÃO
@@ -189,11 +198,11 @@ void loop(){
 
 /**************************************************************************/
   
-  if (tempo - tempo_anterior >= intervalo) {      // ATUALIZA O CONSOLE A CADA MINUTO COM RPM (ROTAÇÕES POR MINUTO) E RT (ROTAÇÕES TOTAIS)
+  if (tempo - tempo_anterior_monitor >= VELOCIDADE_MONITOR) {      // ATUALIZA O CONSOLE DE ACORDO COM A TAXA DE AUTALIZAÇÃO /// PADRÃO: 60.000
    
-    tempo_anterior = tempo;                       // GATILHO DA FUNÇÃO
+    tempo_anterior_monitor = tempo;                       
 
-    rpm = contagem_total - ultima_contagem;       // FUNÇÃO RPM
+    rpm = contagem_total - ultima_contagem;       // FUNÇÃO RPM    /// ATENÇÃO! RPM = ROTAÇÕES POR TAXA DE ATUALIZAÇÃO DO MONITOR SERIAL
     ultima_contagem = contagem_total;
 
     Serial.print("MINUTO: "); Serial.print(minutos); Serial.print("   RPM: "); Serial.print(rpm); Serial.print("    TOTAL: "); Serial.print(contagem_total);
@@ -209,5 +218,4 @@ void loop(){
     vertical.write(90);
   }
   
-  delay(ATRASO);  
 }
