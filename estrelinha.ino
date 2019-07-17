@@ -29,23 +29,25 @@
                                 /// CONFIGURAÇÕES
 
 #define VELOCIDADE_TESTE 20                   // VELOCIDADE AUTO TESTE
-#define TOLERANCIA 30                         // SENSIBILIDADE DO SISTEMA 
+#define TOLERANCIA 25                         // SENSIBILIDADE DO SISTEMA 
 #define VELOCIDADE_SERVO 25                   // VELOCIDADE DOS ATUADORES
 #define VELOCIDADE_MONITOR 60000              // TAXA DE ATUALIZAÇÃO DO MONITOR /// 60.000 == 1 MINUTO (NÃO MEXER!) 
 
 #define ESTRELINHA 6                          // POSIÇÃO ALVORADA
+#define GRAU_MINUTO 240000                    // 240.000 1°/4 MINUTOS
+
 /*******************************************************************************************************************/
 
                                  /// ATUADORES
 
 
 Servo horizontal;                      // OBJETO SERVO HORIZONTAL 
-#define h_limite_min 45                // LIMITES DO EIXO "HORIZONTAL" 
-#define h_limite_max 135
+#define h_limite_min 50                // LIMITES DO EIXO "HORIZONTAL" 
+#define h_limite_max 130
 
 Servo vertical;                        // OBJETO SERVO VERTICAL
 #define v_limite_min 30                // LIMITES DO EIXO "VERTICAL"
-#define v_limite_max 140
+#define v_limite_max 142                                                                                                            ////!\\\\ //150                                              
 
 /*********************************************************************************************************************/
 
@@ -53,8 +55,8 @@ Servo vertical;                        // OBJETO SERVO VERTICAL
 
 // SERVOS
 
-int servo_h =  90;                     // SERVO HORIZONTAL
-int servo_v =  90;                     // SERVO VERTICAL
+int servo_h =  86;                     // SERVO HORIZONTAL                                                                  
+int servo_v =  23;                     // SERVO VERTICAL                                                                           
 
 // CONTADORES
 
@@ -64,12 +66,13 @@ int rpm = 0;                          // ROTAÇÕES POR MINUTO
 
 // TEMPO
 
-unsigned long tempo;                        // CONTA O TEMPO EM MILISEGUNDOS APÓS LIGAR ARDUINO
-unsigned long tempo_anterior_servo = 0;     // UTILIZADO NOS ATUADORES
-unsigned long tempo_anterior_monitor = 0;   // UTILIZADO NO MONITOR
-unsigned long intervalo = 60000;            // UM MINUTO, NÃO MEXER!
+unsigned long tempo;                            // CONTA O TEMPO EM MILISEGUNDOS APÓS LIGAR ARDUINO
+unsigned long tempo_anterior_cronologico = 0;
+unsigned long tempo_anterior_servo = 0;         // UTILIZADO NOS ATUADORES
+unsigned long tempo_anterior_monitor = 0;       // UTILIZADO NO MONITOR
+unsigned long intervalo = 60000;                // UM MINUTO, NÃO MEXER!
 
-int minutos = 0;                            // USADO NO MONITOR SERIAL PARA DEFINIR O TEMPO EM QUE AMOSTRA FOI COLETADA
+int minutos = 0;                                // USADO NO MONITOR SERIAL PARA DEFINIR O TEMPO EM QUE AMOSTRA FOI COLETADA
 
 
 // BOTÃO
@@ -90,7 +93,7 @@ void setup() {
   horizontal.attach(PIN_SERVO_H);      // ATRACA OBJETO SERVO HORIZONTAL AO PINO 10
   vertical.attach(PIN_SERVO_V);        // ATRACA OBJETO SERVO VERTICAL AO PINO 11
 
-  horizontal.write(servo_h);
+  //horizontal.write(servo_h);                                                                                                          ////!\\\\                                                                                           
 
   delay(500);
   
@@ -98,6 +101,8 @@ void setup() {
 
         /// AUTO TESTE MECÃNICO
 
+/*                                                                                                                               
+  -----------------------------------------------------------------------------------------------------------------------------------------  ////!\\\\                                                                                                                               ////!\\\\
   for(servo_v = 90; servo_v >= 30; servo_v--){
     vertical.write(servo_v);
     delay(VELOCIDADE_TESTE);
@@ -125,16 +130,23 @@ void setup() {
     horizontal.write(servo_h);
     delay(VELOCIDADE_TESTE);
   }
+  -----------------------------------------------------------------------------------------------------------------------------------------  ////!\\\\
+  */
 
         /// FIM DO TESTE
-      
+
+  vertical.write(servo_v);
+  horizontal.write(servo_h);    
   delay(1000);                         // TEMPO NECESSÁRIO PARA O SISTEMA ATIGINR A POSIÇÃO PADRÃO
 }
+
 
 void loop(){
 
   tempo = millis();                    // CONTA O TEMPO DESDE O PRIMEIRO LOOP
 
+/*
+ -----------------------------------------------------------------------------------------------------------------------------------------  ////!\\\\
   int sd = analogRead(LDR_1);          // REALIZA LEITURA ANALOGICA DO LDR 1 E ATRIBUE À "SD" (SUPERIOR DIREITO)
   int se = analogRead(LDR_2);          // REALIZA LEITURA ANALOGICA DO LDR 2 E ATRIBUE À "SE" (SUPERIOR ESQUERDO)
   int ie = analogRead(LDR_3);          // REALIZA LEITURA ANALOGICA DO LDR 3 E ATRIBUE À "IE" (INFERIOR ESQUERDO)
@@ -148,8 +160,15 @@ void loop(){
   int delta_v  = m_superior - m_inferior;             // DIFERENÇA UTILIZADA PARA CONTROLAR OS ATUADORES
   int delta_h  = m_esquerda - m_direita;
 
+  -----------------------------------------------------------------------------------------------------------------------------------------  ////!\\\\
+*/
 
 /*******************************************************************************/
+
+/// ATIVO FOTOSSENSIVEL 
+
+/* -----------------------------------------------------------------------------------------------------------------------------------------  ////!\\\\
+                                                                                                                                         
 if(tempo - tempo_anterior_servo >= VELOCIDADE_SERVO){
   
   tempo_anterior_servo = tempo;
@@ -169,7 +188,8 @@ if(tempo - tempo_anterior_servo >= VELOCIDADE_SERVO){
     if(servo_v <= v_limite_min) servo_v = v_limite_min;         // LIMITE MÍNIMO DO SERVO VERTICAL
     if(servo_v >= v_limite_max) servo_v = v_limite_max;         // LIMITE MÁXIMO DO SERVO VERTICAL
 
-          /*****************/
+
+  
 
   if( delta_h < (TOLERANCIA * (-1)) || delta_h > TOLERANCIA){       // FUNÇÃO CONTROLA O ATUADOR HORIZONTAL
 
@@ -186,7 +206,28 @@ if(tempo - tempo_anterior_servo >= VELOCIDADE_SERVO){
     if(servo_h <= h_limite_min) servo_h = h_limite_min;      // LIMITE MÍNIMO DO SERVO HORIZONTAL
     if(servo_h >= h_limite_max) servo_h = h_limite_max;      // LIMITE MÁXIMO DO SERVO HORIZONTAL
   
+} -----------------------------------------------------------------------------------------------------------------------------------------  ////!\\\\
+
+*/ 
+    
+/****************************************************************************************************/
+
+///////////// ATIVO CRONOLOGICO
+
+
+
+if(tempo - tempo_anterior_cronologico >= GRAU_MINUTO){
+
+  tempo_anterior_cronologico = tempo;
+
+  servo_v++;
+
 }
+
+if(servo_v >= v_limite_max) servo_v = v_limite_max;
+
+vertical.write(servo_v);
+
 /**************************************************************************/
 
   botao = digitalRead(PIN_BOTAO);                  // LEITURA DO BOTÃO
@@ -213,9 +254,10 @@ if(tempo - tempo_anterior_servo >= VELOCIDADE_SERVO){
   
 /***************************************************************************/
   
-  if( (se+sd+ie+id) / 4 <= ESTRELINHA){           // GATILHO POR DO SOL 
+/*  if( (se+sd+ie+id) / 4 <= ESTRELINHA){           // GATILHO POR DO SOL -----------------------------------------------------------------------------------  ////!\\\\
     horizontal.write(90); 
     vertical.write(90);
   }
-  
+                    -----------------------------------------------------------------------------------------------------------------------------------------  ////!\\\\
+ */
 }
