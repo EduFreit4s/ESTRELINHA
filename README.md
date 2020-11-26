@@ -6,7 +6,7 @@
 </h1>
 
 <h1 align="center">
-  <img src="https://github.com/EduFreit4s/Estrelinha-v2.0/blob/master/Figuras%20do%20manual/prototipo.jpeg" width=60%>
+  <img src="https://github.com/EduFreit4s/ESTRELINHA/blob/master/images/estrelinha_1.jpg" width=60%>
 </h1>
   
 <p align="center">
