@@ -2,7 +2,7 @@
 
 <h1 align="center">
     
-    Estrelinha
+    Estrelinha - Um rastreador solar com arduino
 </h1>
 
 <h1 align="center">
@@ -15,12 +15,10 @@
   <a href="#materiais">Materiais</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
   <a href="#metodologia">Metodologia</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
   <a href="#resultados">Resultados</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#conclusao">Conclusão</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#referencias">Referências</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#conclusão">Conclusão</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#referências">Referências</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
   <a href="#sobre">Sobre</a>
 </p>
-
-> Um rastreadsor solar com arduino
 
 ### Introdução
 
