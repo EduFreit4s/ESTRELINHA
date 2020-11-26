@@ -32,7 +32,7 @@ produção quando o ângulo de incidência dos raios solares é perpendicular à
 célula. E essa é a proposta da nossa máquina.
 
 <p align="center">
-  <img src="" width=60%>
+  <img src="https://github.com/EduFreit4s/ESTRELINHA/blob/master/images/estrelinha_2.jpg" width=60%>
 </p>
 
 ### Objetivos
