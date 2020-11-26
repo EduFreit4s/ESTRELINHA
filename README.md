@@ -32,7 +32,7 @@ produção quando o ângulo de incidência dos raios solares é perpendicular à
 célula. E essa é a proposta da nossa máquina.
 
 <p align="center">
-  <img src="https://github.com/EduFreit4s/ESTRELINHA/blob/master/images/estrelinha_2.jpg" width=60%>
+  <img src="https://github.com/EduFreit4s/ESTRELINHA/blob/master/images/intro_1.png" width=60%>
 </p>
 
 ### Objetivos
@@ -41,7 +41,7 @@ célula. E essa é a proposta da nossa máquina.
 mais quente do que antes da revolução industrial. É pouco, mas o suficiente para modificar o clima de forma irreversível. Hodiernamente, precisamos transformar nossa matriz energética em uma escala global. “Essa é a corrida da nossa vida, por nossas vidas”. E se a gente não pensar fora da caixa, a nossa história nesse pálido ponto azul será breve. Foi pensado que o primeiro passo poderia ser dado conseguir maximizar a eficiência da tecnologia atual, não apenas do ponto de vista de consumo, mas também da produção que é a função de um rastreador solar.
 
 <p align="center">
-  <img src="" width=60%>
+  <img src="https://github.com/EduFreit4s/ESTRELINHA/blob/master/images/objetivo.png" width=60%>
 </p>
 
 ### Materiais
